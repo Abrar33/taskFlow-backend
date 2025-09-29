@@ -22,6 +22,10 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
 // ✅ Routes
 app.use("/api/users", userRoutes);
 app.use("/api/boards", boardRoutes);
