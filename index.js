@@ -17,9 +17,22 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 // ✅ Middleware
+const allowedOrigins = [
+  "https://task-flow-frontend-tau.vercel.app", // frontend prod
+  "http://localhost:5173",                     // local dev
+];
+
 app.use(cors({
-    origin: ["http://localhost:5173/","https://task-flow-frontend-9gkouey3k-abrar33s-projects.vercel.app"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
 app.use(bodyParser.json());
@@ -40,9 +53,9 @@ const server = http.createServer(app);
 
 // ✅ Initialize Socket.IO
 const io = new Server(server, {
-    cors: {
-    origin: ["http://localhost:5173/","https://task-flow-frontend-9gkouey3k-abrar33s-projects.vercel.app"],
-    methods: ["GET", "POST", "PATCH", "DELETE"],
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
     credentials: true
   }
 });
