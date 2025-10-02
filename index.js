@@ -17,7 +17,10 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 // ✅ Middleware
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173/","https://task-flow-frontend-9gkouey3k-abrar33s-projects.vercel.app"],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,7 +40,11 @@ const server = http.createServer(app);
 
 // ✅ Initialize Socket.IO
 const io = new Server(server, {
-  cors: "*"
+    cors: {
+    origin: ["http://localhost:5173/","https://task-flow-frontend-9gkouey3k-abrar33s-projects.vercel.app"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true
+  }
 });
 deadlineCron(io); // Start the cron job with io instance
 // Make io accessible in controllers
