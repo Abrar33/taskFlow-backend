@@ -17,16 +17,27 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 // ✅ Middleware
-const allowedOrigin = process.env.CLIENT_URL || "*";
+// ✅ Allowed origins for both local & prod
+const allowedOrigins = [
+  "http://localhost:5173", // local frontend
+  process.env.CLIENT_URL   // prod frontend (from env)
+].filter(Boolean); // remove undefined
 
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -47,7 +58,7 @@ const server = http.createServer(app);
 // ✅ Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigin,
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
