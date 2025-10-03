@@ -17,23 +17,16 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 // ✅ Middleware
-const allowedOrigins = [
-  "https://task-flow-frontend-tau.vercel.app", // frontend prod
-  "http://localhost:5173",                     // local dev
-];
+const allowedOrigin = process.env.CLIENT_URL || "*";
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,10 +47,10 @@ const server = http.createServer(app);
 // ✅ Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: allowedOrigin,
     methods: ["GET", "POST"],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 deadlineCron(io); // Start the cron job with io instance
 // Make io accessible in controllers
