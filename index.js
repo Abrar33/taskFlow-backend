@@ -16,19 +16,19 @@ const notificationRoutes = require("./Routes/notifications-routes");
 const port = process.env.PORT || 3000;
 connectDB();
 
-// ✅ Middleware
-// ✅ Allowed origins for both local & prod
 const allowedOrigins = [
-  "http://localhost:5173", // local frontend
-  process.env.CLIENT_URL   // prod frontend (from env)
-].filter(Boolean); // remove undefined
+  "http://localhost:5173",
+  process.env.CLIENT_URL
+].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
+      console.log("🌍 Incoming request origin:", origin); // ✅ Debug log
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.warn("❌ Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -37,6 +37,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 app.use(express.json());
 app.use(bodyParser.json());
