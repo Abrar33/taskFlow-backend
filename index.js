@@ -24,8 +24,10 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      console.log("🌍 Incoming request origin:", origin); // ✅ Debug log
+      console.log("🌍 Incoming request origin:", origin);
+
       if (!origin || allowedOrigins.includes(origin)) {
+        // ✅ allow undefined origins too
         callback(null, true);
       } else {
         console.warn("❌ Blocked by CORS:", origin);
@@ -37,6 +39,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 
 app.use(express.json());
