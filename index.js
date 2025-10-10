@@ -17,10 +17,10 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.CLIENT_URL
-].filter(Boolean);
-
+  "https://task-flow-frontend-git-main-abrar33s-projects.vercel.app",
+  "https://task-flow-frontend.vercel.app", // optional main domain
+  "http://localhost:5173", // for local dev
+];
 app.use(
   cors({
     origin: (origin, callback) => {
